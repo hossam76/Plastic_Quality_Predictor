@@ -31,8 +31,20 @@ label_map = {
 
 # Streamlit setup
 st.set_page_config(page_title="Plastic Quality Predictor", layout="wide")
+st.title("🔍 Plastic Injection Moulding – Quality Predictor Dashboard")
+st.markdown("Welcome! Use the tabs below to run predictions and review your model!.")
+
 st.sidebar.title("Plastic Injection Moulding - Quality Class Predictor")
 st.sidebar.info("Navigate sections from the tabs above to use the model.")
+st.sidebar.info("""
+**Features:**
+- Random Forest Classifier with 91.54% cross-validation accuracy  
+- Selected Parameters: Cycle time, Plasticizing time, Shot volume, Screw position, Torque Efficiency, Filling Speed  
+- Streamlit Interface for real-time single and batch predictions  
+- Model Performance Insights with visual analytics  
+- Exportable Results for decision-making and traceability
+""")
+
 
 tab1, tab2, tab3 = st.tabs(["📈 Single Prediction", "📁 Batch Prediction", "📘 Model Info"])
 
