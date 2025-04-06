@@ -57,7 +57,6 @@ st.markdown(custom_css, unsafe_allow_html=True)
 # Streamlit UI setup
 st.title("🔍 Plastic Injection Moulding – Quality Predictor Dashboard")
 st.markdown("Welcome! Use the tabs below to run predictions and review your model.")
-'''
 
 
 st.sidebar.title("Plastic Injection Moulding – Quality Class Predictor")
