@@ -61,13 +61,13 @@ st.markdown("Welcome! Use the tabs below to run predictions and review your mode
 
 st.sidebar.title("Plastic Injection Moulding – Quality Class Predictor")
 
-st.sidebar.markdown("""
+st.sidebar.info("""
     <div style="background-color: #d1ecf1; padding: 15px; border-radius: 10px; color: #0c5460;">
         Navigate sections from the tabs above to use the model.
     </div>
     """, unsafe_allow_html=True)
 
-st.sidebar.markdown("""
+st.sidebar.info("""
     <div style="background-color: #d1ecf1; padding: 15px; border-radius: 10px; color: #0c5460;">
         <strong>Features:</strong>
         <ul>
