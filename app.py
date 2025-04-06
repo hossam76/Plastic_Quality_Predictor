@@ -99,7 +99,7 @@ with tab1:
 with tab2:
     st.subheader("📁 Upload CSV for Batch Prediction")
     st.info("Ensure your CSV file includes the following columns:")
-    st.code(", ".join(expected_features))
+    st.code("\n".join(expected_features))
 
     uploaded_file = st.file_uploader("Upload CSV", type=["csv"])
     if uploaded_file is not None:
