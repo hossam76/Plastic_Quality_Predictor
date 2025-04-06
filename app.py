@@ -57,17 +57,30 @@ st.markdown(custom_css, unsafe_allow_html=True)
 # Streamlit UI setup
 st.title("🔍 Plastic Injection Moulding – Quality Predictor Dashboard")
 st.markdown("Welcome! Use the tabs below to run predictions and review your model.")
+'''
 
-st.sidebar.title("Plastic Injection Moulding- Quality Class Predictor")
-st.sidebar.info("Navigate sections from the tabs above to use the model.")
-st.sidebar.info("""
-**Features:**
-- Random Forest Classifier with 93.17% cross-validation accuracy
-- Selected Parameters: Cycle time, Plasticizing time, Shot volume, Screw position, Torque Efficiency, Filling Speed
-- Streamlit Interface for real-time single and batch predictions
-- Model Performance Insights with visual analytics
-- Exportable Results for decision-making and traceability
-""")
+
+st.sidebar.title("Plastic Injection Moulding – Quality Class Predictor")
+
+st.sidebar.markdown("""
+    <div style="background-color: #d1ecf1; padding: 15px; border-radius: 10px; color: #0c5460;">
+        Navigate sections from the tabs above to use the model.
+    </div>
+    """, unsafe_allow_html=True)
+
+st.sidebar.markdown("""
+    <div style="background-color: #d1ecf1; padding: 15px; border-radius: 10px; color: #0c5460;">
+        <strong>Features:</strong>
+        <ul>
+            <li>Random Forest Classifier with 93.17% cross-validation accuracy</li>
+            <li>Selected Parameters: Cycle time, Plasticizing time, Shot volume, Screw position, Torque Efficiency, Filling Speed</li>
+            <li>Streamlit Interface for real-time single and batch predictions</li>
+            <li>Model Performance Insights with visual analytics</li>
+            <li>Exportable Results for decision-making and traceability</li>
+        </ul>
+    </div>
+    """, unsafe_allow_html=True)
+
 
 tab1, tab2, tab3 = st.tabs(["📈 Single Prediction", "📁 Batch Prediction", "📘 Model Info"])
 
