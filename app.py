@@ -174,18 +174,6 @@ with tab3:
             st.pyplot(fig)
 
 
-
-    st.subheader("📊 ANOVA Feature Relevance (Example)")
-    anova_df = pd.DataFrame({
-        "Feature": expected_features,
-        "F-value": np.random.uniform(5, 20, len(expected_features))  # replace with real ANOVA if available
-    }).sort_values("F-value")
-    fig, ax = plt.subplots()
-    anova_df.plot(kind="barh", x="Feature", y="F-value", ax=ax, legend=False, color="#FF8C00")
-    ax.set_title("ANOVA F-values per Feature")
-    st.pyplot(fig)
-
-
     st.subheader("📊 Test Set Confusion Matrix")
     test_file = st.file_uploader("Upload test CSV with 'true_quality' column", type=["csv"], key="test_csv")
     if test_file is not None:
