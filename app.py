@@ -1,4 +1,3 @@
-
 import streamlit as st
 st.set_page_config(page_title="Plastic Quality Predictor", layout="wide")
 
@@ -8,6 +7,7 @@ import joblib
 import io
 import numpy as np
 import matplotlib.pyplot as plt
+import seaborn as sns
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import classification_report, confusion_matrix, ConfusionMatrixDisplay
@@ -58,31 +58,16 @@ st.markdown(custom_css, unsafe_allow_html=True)
 st.title("🔍 Plastic Injection Moulding – Quality Predictor Dashboard")
 st.markdown("Welcome! Use the tabs below to run predictions and review your model.")
 
-
-st.sidebar.title("Plastic Injection Moulding – Quality Class Predictor")
-
-# Description Box with bottom margin
-st.sidebar.markdown("""
-<div style="background-color: #d1ecf1; padding: 1em; border-radius: 10px; color: #0c5460; font-size: 0.95em; margin-bottom: 1em;">
-    Navigate sections from the tabs above to use the model.
-</div>
-""", unsafe_allow_html=True)
-
-# Features Box
-st.sidebar.markdown("""
-<div style="background-color: #d1ecf1; padding: 1em; border-radius: 10px; color: #0c5460; font-size: 0.95em;">
-    <strong>Features:</strong>
-    <ul>
-        <li>Random Forest Classifier with 93.17% cross-validation accuracy</li>
-        <li>Selected Parameters: Cycle time, Plasticizing time, Shot volume, Screw position, Torque Efficiency, Filling Speed</li>
-        <li>Streamlit Interface for real-time single and batch predictions</li>
-        <li>Model Performance Insights with visual analytics</li>
-        <li>Exportable Results for decision-making and traceability</li>
-    </ul>
-</div>
-""", unsafe_allow_html=True)
-
-
+st.sidebar.title("Plastic Injection Moulding- Quality Class Predictor")
+st.sidebar.info("Navigate sections from the tabs above to use the model.")
+st.sidebar.info("""
+**Features:**
+- Random Forest Classifier with 93.17% cross-validation accuracy
+- Selected Parameters:Cycle time, Plasticizing time, Specific injection pressure peak value , time to fill, Filling Speed, Shot volume, Torque mean value current cycle
+- Streamlit Interface for real-time single and batch predictions
+- Model Performance Insights with visual analytics
+- Exportable Results for decision-making and traceability
+""")
 
 tab1, tab2, tab3 = st.tabs(["📈 Single Prediction", "📁 Batch Prediction", "📘 Model Info"])
 
@@ -121,17 +106,30 @@ with tab2:
         data = pd.read_csv(uploaded_file)
         st.write("📋 Preview of Uploaded Data", data.head())
 
+
         try:
             data_for_prediction = data[expected_features]
-            scaled_data = scaler.transform(data_for_prediction)
-            predictions = model.predict(scaled_data)
+        except KeyError as e:
+            st.error(f"❌ Missing required columns: {e}")
+        else:
+            scaled = scaler.transform(data_for_prediction)
+            predictions = model.predict(scaled)
             data['Predicted Quality'] = predictions
             data['Predicted Label'] = data['Predicted Quality'].map(label_map)
+            st.success("✅ Predictions completed.")
+            st.write("📄 Predictions:", data.head())
 
-            st.success("✅ Predictions completed successfully.")
-            st.write("🔎 Prediction Results:", data.head())
+            st.subheader("📦 Production Quality Summary")
+            total = len(data)
+            accepted = data['Predicted Quality'].isin([2, 3]).sum()
+            scrap = data['Predicted Quality'].isin([1]).sum()
+            scrap_rate = scrap / total * 100
+            st.metric("Total Items", total)
+            st.metric("Accepted", accepted)
+            st.metric("Scrap", scrap)
+            st.metric("Scrap Rate (%)", f"{scrap_rate:.2f}")
 
-            st.subheader("📊 Class Distribution")
+            st.subheader("📊 Class-wise Prediction Count")
             class_counts = data['Predicted Label'].value_counts().sort_index()
             st.bar_chart(class_counts)
 
@@ -143,13 +141,20 @@ with tab2:
                 disp.plot(ax=ax, cmap="Blues", colorbar=False)
                 st.pyplot(fig)
 
-            # Downloadable predictions
+                st.subheader("📊 Class-wise Evaluation Metrics")
+                report = classification_report(data['true_quality'], data['Predicted Quality'], output_dict=True)
+                report_df = pd.DataFrame(report).transpose()
+                st.dataframe(report_df)
+            else:
+                st.warning("True quality labels are not available for evaluation.")
+
+            #downloadable csv
+            st.subheader("📥 Download Predictions as CSV")
             csv_buffer = io.StringIO()
             data.to_csv(csv_buffer, index=False)
             st.download_button("📥 Download Results CSV", data=csv_buffer.getvalue(), file_name="predicted_output.csv", mime="text/csv")
 
-        except KeyError as e:
-            st.error(f"❌ Missing required columns: {e}")
+
 
 # ----- Model Info Tab -----
 with tab3:
@@ -169,6 +174,19 @@ with tab3:
             ax.invert_yaxis()
             st.pyplot(fig)
 
+
+
+    st.subheader("📊 ANOVA Feature Relevance (Example)")
+    anova_df = pd.DataFrame({
+        "Feature": expected_features,
+        "F-value": np.random.uniform(5, 20, len(expected_features))  # replace with real ANOVA if available
+    }).sort_values("F-value")
+    fig, ax = plt.subplots()
+    anova_df.plot(kind="barh", x="Feature", y="F-value", ax=ax, legend=False, color="#FF8C00")
+    ax.set_title("ANOVA F-values per Feature")
+    st.pyplot(fig)
+
+
     st.subheader("📊 Test Set Confusion Matrix")
     test_file = st.file_uploader("Upload test CSV with 'true_quality' column", type=["csv"], key="test_csv")
     if test_file is not None:
@@ -178,7 +196,6 @@ with tab3:
             y_test = test_df["true_quality"]
             X_scaled = scaler.transform(X_test)
             y_pred = model.predict(X_scaled)
-
             cm = confusion_matrix(y_test, y_pred)
             fig, ax = plt.subplots()
             disp = ConfusionMatrixDisplay(confusion_matrix=cm)
@@ -187,7 +204,10 @@ with tab3:
         except KeyError as e:
             st.error(f"❌ Missing columns: {e}")
 
+
+
+
+
 # Footer
 st.markdown("---")
-st.markdown("📘 *Created for ARI Coursework — Streamlit Dashboard by 4134124*")
-
+st.markdown("📘 *Streamlit Dashboard created by 4134124*")
