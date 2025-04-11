@@ -36,21 +36,30 @@ label_map = {
     4: "Inefficient"
 }
 
-# Custom CSS to style the st.sidebar.info() messages
 custom_css = """
 <style>
-    /* Target the st.sidebar.info() alert boxes */
+[data-testid="stSidebar"] .stAlert {
+    background-color: #f0f4f8; /* Light neutral background */
+    color: #0f172a; /* Dark navy text for readability */
+    border-left: 4px solid #3b82f6; /* Blue left border for contrast */
+    padding: 10px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+}
+
+@media (prefers-color-scheme: dark) {
     [data-testid="stSidebar"] .stAlert {
-        background-color: #e0f7fa; /* Light cyan background */
-        color: #006064; /* Dark cyan text */
-        border-left: 5px solid #004d40; /* Darker cyan left border */
+        background-color: #1e293b; /* Dark navy background */
+        color: #ffffff; /* White text */
+        border-left: 4px solid #3b82f6; /* Same blue border */
     }
+}
 </style>
 """
 
-# Inject the custom CSS into the Streamlit app
-st.markdown(custom_css, unsafe_allow_html=True)
 
+# Inject the custom CSS
+st.markdown(custom_css, unsafe_allow_html=True)
 
 
 # Streamlit UI setup
